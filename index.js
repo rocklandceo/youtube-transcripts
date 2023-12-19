@@ -35,7 +35,8 @@ rl.question('Please enter the YouTube URL: ', (url) => {
       mimetype: 'audio/mp3'
     };
     const options = {
-      punctuate: true
+      punctuate: true,
+      utterances: true,
     };
 
     const result = await deepgram.transcription.preRecorded(file, options).catch(e => console.log(e));
