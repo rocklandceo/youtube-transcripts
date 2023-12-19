@@ -4,6 +4,7 @@ const YoutubeMp3Downloader = require('youtube-mp3-downloader');
 const { Deepgram } = require('@deepgram/sdk');
 const ffmpeg = require('ffmpeg-static');
 
+require('dotenv').config();
 const deepgram = new Deepgram(process.env.DG_KEY);
 
 // Create a readline interface
@@ -14,13 +15,17 @@ const rl = readline.createInterface({
 
 // Prompt the user to enter the YouTube URL
 rl.question('Please enter the YouTube URL: ', (url) => {
+  // Extract the video ID from the URL
+  const videoId = url.split('v=')[1].split('&')[0];
+
   const YD = new YoutubeMp3Downloader({
     ffmpegPath: ffmpeg,
     outputPath: './',
     youtubeVideoQuality: 'highestaudio'
   });
 
-  YD.download(url); // Use the user-provided URL
+    // Use the extracted video ID
+    YD.download(videoId);
 
   YD.on('progress', data => {
     console.log(data.progress.percentage + '% downloaded');
@@ -38,11 +43,12 @@ rl.question('Please enter the YouTube URL: ', (url) => {
       punctuate: true,
       utterances: true,
     };
+    // console.log(result.toWebVTT())
 
     const result = await deepgram.transcription.preRecorded(file, options).catch(e => console.log(e));
     const transcript = result.results.channels[0].alternatives[0].transcript;
 
-    fs.writeFileSync(`${videoFileName}.txt`, transcript, () => `Wrote ${videoFileName}.txt`);
+    fs.writeFileSync(`${videoFileName}.txt`, transcript, () => `Wrote ${videoFileName}.txt`, result.toWebVTT());
     fs.unlinkSync(videoFileName);
 
     // Close the readline interface
