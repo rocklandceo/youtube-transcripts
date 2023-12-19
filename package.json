@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@deepgram/captions": "^1.2.0",
     "@deepgram/sdk": "^1.0.3",
     "dotenv": "^16.3.1",
     "ffmpeg-static": "^4.4.0",
